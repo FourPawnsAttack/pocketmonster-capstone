@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Code Adventure</title>
+    <!-- Retro Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Retro Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- TOP CONTROL BAR -->
+    <header class="top-nav">
+        <div class="nav-brand">
+            <span class="pokeball-icon">🔴</span>
+            <span class="title">POKÉMON CODE ADVENTURE</span>
+        </div>
+        <div class="nav-actions">
+            <button id="btn-sound" class="btn-retro btn-small" title="Toggle Sound">🔊 SOUND: ON</button>
+            <button id="btn-guide" class="btn-retro btn-small" title="Trainer Guide & Mission Hints">📜 GUIDE</button>
+            <button id="btn-pokedex" class="btn-retro btn-small" title="View Caught Pokémon">📖 POKÉDEX (<span id="pokedex-count">0</span>)</button>
+            <button id="btn-toggle-mode" class="btn-retro btn-small btn-mode" title="Click to toggle between Student Code and Reference Solution">
+                MODE: <span id="mode-text">STUDENT CODE</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="game-container">
+
+        <!-- SCREEN 1: PROFESSOR OAK'S STARTER LAB -->
+        <section id="screen-starter-select" class="screen active">
+            <div class="oak-dialog-box">
+                <div class="oak-avatar">👴🏼</div>
+                <div class="oak-text">
+                    <p class="dialogue-line">PROFESSOR OAK: "Hello there, young coder! Welcome to the world of Pokémon!"</p>
+                    <p class="dialogue-line">"Before you start your journey, choose your partner Pokémon to program and train!"</p>
+                </div>
+            </div>
+
+            <div class="starter-grid" id="starter-cards-container">
+                <!-- Dynamically populated starter cards -->
+                <div class="loading-text">Loading Starter Pokémon...</div>
+            </div>
+
+            <div class="lab-instructions">
+                <p>💡 <strong>Trainer Hint:</strong> Your choice will be passed to <code>create_starter()</code> in <code>starters.py</code>!</p>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: THE BATTLE ARENA -->
+        <section id="screen-battle" class="screen">
+            <div class="battle-arena">
+                <!-- Battlefield Scenery -->
+                <div class="sky-background"></div>
+                
+                <!-- ENEMY HUD & SPRITE -->
+                <div class="enemy-area">
+                    <div class="hud-box enemy-hud">
+                        <div class="hud-header">
+                            <span id="enemy-name" class="hud-name">WILD POKÉMON</span>
+                            <span class="hud-level">Lv. 5</span>
+                        </div>
+                        <div class="hud-hp-container">
+                            <span class="hp-label">HP</span>
+                            <div class="hp-bar-bg">
+                                <div id="enemy-hp-fill" class="hp-bar-fill hp-green" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="hud-hp-text">
+                            <span id="enemy-hp-cur">40</span> / <span id="enemy-hp-max">40</span>
+                        </div>
+                    </div>
+
+                    <div class="platform enemy-platform">
+                        <img id="enemy-sprite" class="sprite enemy-sprite" src="/static/images/sprites/bulbasaur.gif" alt="Enemy Pokémon">
+                        <div id="enemy-damage-float" class="damage-float"></div>
+                    </div>
+                </div>
+
+                <!-- PLAYER HUD & SPRITE -->
+                <div class="player-area">
+                    <div class="platform player-platform">
+                        <img id="player-sprite" class="sprite player-sprite" src="/static/images/sprites/charmander_back.gif" alt="Player Pokémon">
+                        <div id="player-damage-float" class="damage-float"></div>
+                    </div>
+
+                    <div class="hud-box player-hud">
+                        <div class="hud-header">
+                            <span id="player-name" class="hud-name">CHARMANDER</span>
+                            <span class="hud-level">Lv. 5</span>
+                        </div>
+                        <div class="hud-hp-container">
+                            <span class="hp-label">HP</span>
+                            <div class="hp-bar-bg">
+                                <div id="player-hp-fill" class="hp-bar-fill hp-green" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="hud-hp-text">
+                            <span id="player-hp-cur">45</span> / <span id="player-hp-max">45</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POKEBALL THROW ANIMATION CONTAINER -->
+                <div id="pokeball-anim-container" class="pokeball-anim-container hidden">
+                    <img id="anim-pokeball" class="anim-pokeball" src="/static/images/sprites/poke-ball.png" alt="Ball">
+                    <div id="anim-stars" class="anim-stars hidden">✨ ⭐ ✨</div>
+                </div>
+            </div>
+
+            <!-- BATTLE BOTTOM CONSOLE -->
+            <div class="battle-console">
+                <!-- DIALOGUE LOG (LEFT) -->
+                <div class="dialogue-box" id="dialogue-box">
+                    <p id="dialogue-text">What will your Pokémon do?</p>
+                </div>
+
+                <!-- INTERACTIVE CONTROLS (RIGHT) -->
+                <div class="controls-box">
+                    <!-- MAIN 4 ACTION BUTTONS -->
+                    <div id="main-actions-grid" class="actions-grid">
+                        <button id="btn-fight" class="btn-action btn-red">⚔️ FIGHT</button>
+                        <button id="btn-bag" class="btn-action btn-yellow">🎒 BAG</button>
+                        <button id="btn-catch" class="btn-action btn-blue">🔴 CATCH</button>
+                        <button id="btn-run" class="btn-action btn-green">🏃 RUN</button>
+                    </div>
+
+                    <!-- SUBMENU: MOVES (FIGHT) -->
+                    <div id="moves-grid" class="moves-grid hidden">
+                        <!-- Populated dynamically with player moves -->
+                    </div>
+
+                    <!-- SUBMENU: BAG (POTIONS) -->
+                    <div id="bag-menu" class="sub-menu hidden">
+                        <div class="bag-header">
+                            <span>POTIONS IN BAG: <strong id="potion-count">3</strong></span>
+                        </div>
+                        <div class="bag-items">
+                            <button id="btn-use-potion" class="btn-retro btn-item">
+                                <img src="/static/images/sprites/potion.png" alt="Potion"> USE POTION (+25 HP)
+                            </button>
+                            <button id="btn-bag-back" class="btn-retro btn-back">BACK</button>
+                        </div>
+                    </div>
+
+                    <!-- SUBMENU: CATCH (BALL SELECTOR) -->
+                    <div id="catch-menu" class="sub-menu hidden">
+                        <div class="catch-header">
+                            <span>CHOOSE A POKÉBALL:</span>
+                        </div>
+                        <div class="ball-buttons">
+                            <button class="btn-retro btn-ball" data-ball="poke-ball">
+                                <img src="/static/images/sprites/poke-ball.png" alt="Poke Ball"> POKÉ BALL
+                            </button>
+                            <button class="btn-retro btn-ball" data-ball="great-ball">
+                                <img src="/static/images/sprites/great-ball.png" alt="Great Ball"> GREAT BALL
+                            </button>
+                            <button class="btn-retro btn-ball" data-ball="ultra-ball">
+                                <img src="/static/images/sprites/ultra-ball.png" alt="Ultra Ball"> ULTRA BALL
+                            </button>
+                            <button id="btn-catch-back" class="btn-retro btn-back">BACK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FRIENDLY "BUG CATCHER" OVERLAY MODAL -->
+    <div id="modal-bug-catcher" class="modal-overlay hidden">
+        <div class="modal-card bug-catcher-card">
+            <div class="modal-header">
+                <span class="bug-icon">🐛</span>
+                <h3>BUG CATCHER ALERT!</h3>
+            </div>
+            <div class="modal-body">
+                <div class="alert-info-row">
+                    <strong>File:</strong> <code id="err-file">battle.py</code>
+                </div>
+                <div class="alert-info-row">
+                    <strong>Function:</strong> <code id="err-function">calculate_damage</code>
+                </div>
+                <div class="alert-message-box">
+                    <p id="err-message">calculate_damage returned None!</p>
+                </div>
+                <div class="alert-hint-box">
+                    <div class="hint-title">💡 Coding Hint for Trainer:</div>
+                    <p id="err-hint">Did you remember to write `return damage, is_critical, type_multiplier` at the end of calculate_damage()?</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-close-bug" class="btn-retro btn-red">I'LL CHECK MY CODE!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VICTORY & REWARD MODAL -->
+    <div id="modal-victory" class="modal-overlay hidden">
+        <div class="modal-card victory-card">
+            <div class="modal-header">
+                <span class="trophy-icon">🏆</span>
+                <h3 id="victory-title">VICTORY!</h3>
+            </div>
+            <div class="modal-body">
+                <p id="victory-message">You defeated the wild Pokémon!</p>
+                <div class="victory-rewards">
+                    <span>⭐ +50 EXP Gained!</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-next-battle" class="btn-retro btn-green">NEXT BATTLE ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POKEDEX DRAWER MODAL -->
+    <div id="modal-pokedex" class="modal-overlay hidden">
+        <div class="modal-card pokedex-card">
+            <div class="modal-header">
+                <h3>TRAINER'S POKÉDEX</h3>
+                <button id="btn-close-pokedex" class="btn-retro btn-small">✖</button>
+            </div>
+            <div class="modal-body">
+                <p>Pokémon Caught in this Session:</p>
+                <div id="pokedex-list" class="pokedex-grid">
+                    <div class="empty-pokedex">No Pokémon caught yet! Throw a Pokéball during battle!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAINER'S GUIDE & HINTS MODAL -->
+    <div id="modal-guide" class="modal-overlay hidden">
+        <div class="modal-card guide-card">
+            <div class="modal-header">
+                <h3>TRAINER'S MISSION GUIDE</h3>
+                <button id="btn-close-guide" class="btn-retro btn-small">✖</button>
+            </div>
+            <div class="modal-body guide-body">
+                <div class="guide-tabs">
+                    <button class="btn-retro btn-small tab-btn active" data-tab="tab-m1">M1: POKÉMON</button>
+                    <button class="btn-retro btn-small tab-btn" data-tab="tab-m2">M2: STARTERS</button>
+                    <button class="btn-retro btn-small tab-btn" data-tab="tab-m3">M3: BATTLE</button>
+                    <button class="btn-retro btn-small tab-btn" data-tab="tab-m4">M4: CATCH</button>
+                    <button class="btn-retro btn-small tab-btn" data-tab="tab-tips">💡 TIPS</button>
+                </div>
+                
+                <div id="tab-m1" class="guide-tab-content">
+                    <h4>🛡️ Mission 1: The Pokémon Class (pokemon.py)</h4>
+                    <p><strong>Goal:</strong> Teach Python what a Pokémon is!</p>
+                    <ul class="guide-list">
+                        <li><code>__init__</code>: Save all stats to <code>self</code> (e.g. <code>self.name = name</code>, <code>self.hp = max_hp</code>).</li>
+                        <li><code>take_damage(amount)</code>: Subtract damage from <code>self.hp</code>. Clamp to 0 (no negative HP!).</li>
+                        <li><code>heal(amount)</code>: Add health to <code>self.hp</code>. Clamp so it never exceeds <code>self.max_hp</code>.</li>
+                        <li><code>is_fainted()</code>: Return <code>True</code> if <code>self.hp &lt;= 0</code>, else <code>False</code>.</li>
+                    </ul>
+                    <div class="guide-hint">💡 <em>Hint: Test with <code>python3 tests/test_pokemon.py</code>!</em></div>
+                </div>
+
+                <div id="tab-m2" class="guide-tab-content hidden">
+                    <h4>🌿 Mission 2: Starter Lab (starters.py)</h4>
+                    <p><strong>Goal:</strong> Help Professor Oak give players their starter Pokémon!</p>
+                    <ul class="guide-list">
+                        <li>Clean up player choice with <code>choice.strip().lower()</code>.</li>
+                        <li>Look up Pokémon data in <code>STARTER_TEMPLATES</code>.</li>
+                        <li>If the choice is unknown or empty, default to <code>"pikachu"</code>!</li>
+                        <li>Create and return a new <code>Pokemon(...)</code> object.</li>
+                    </ul>
+                    <div class="guide-hint">💡 <em>Hint: Test with <code>python3 tests/test_starters.py</code>!</em></div>
+                </div>
+
+                <div id="tab-m3" class="guide-tab-content hidden">
+                    <h4>⚔️ Mission 3: Battle Arena Engine (battle.py)</h4>
+                    <p><strong>Goal:</strong> Power attack damage math and enemy AI!</p>
+                    <ul class="guide-list">
+                        <li><code>get_type_multiplier</code>: Super effective = 2.0x, Not very effective = 0.5x, Neutral = 1.0x.</li>
+                        <li><code>calculate_damage</code>: Base formula is <code>(power * attacker.attack) / defender.defense</code>.</li>
+                        <li>Check for 10% critical hit (1.5x damage).</li>
+                        <li>Guarantee at least 1 damage! Return <code>final_damage, is_critical, type_multiplier</code>.</li>
+                        <li><code>choose_enemy_move</code>: Pick randomly using <code>random.choice(enemy.moves)</code>.</li>
+                    </ul>
+                    <div class="guide-hint">💡 <em>Hint: Test with <code>python3 tests/test_battle.py</code>!</em></div>
+                </div>
+
+                <div id="tab-m4" class="guide-tab-content hidden">
+                    <h4>🔴 Mission 4: Safari Catching (catching.py)</h4>
+                    <p><strong>Goal:</strong> Throw Pokéballs and calculate catch chances!</p>
+                    <ul class="guide-list">
+                        <li>Calculate missing HP%: <code>(max_hp - hp) / max_hp</code>.</li>
+                        <li>Multiply by ball modifier (Pokéball: 1.0x, Great: 1.5x, Ultra: 2.0x).</li>
+                        <li>Roll <code>random.random()</code> against total chance (max 95%).</li>
+                        <li>Return <code>(True, 3)</code> on success, or <code>(False, shakes)</code> on escape!</li>
+                    </ul>
+                    <div class="guide-hint">💡 <em>Hint: Test with <code>python3 tests/test_catching.py</code>!</em></div>
+                </div>
+
+                <div id="tab-tips" class="guide-tab-content hidden">
+                    <h4>🐛 Bug Catcher's Survival Tips</h4>
+                    <ul class="guide-list">
+                        <li><strong>Missing Attribute:</strong> Did you forget <code>self.hp = max_hp</code> in <code>__init__</code>?</li>
+                        <li><strong>Returning None:</strong> Did you forget the <code>return</code> keyword in your function?</li>
+                        <li><strong>Divide by Zero:</strong> Use <code>defense = max(1, defender.defense)</code> to stay safe!</li>
+                        <li><strong>Run all tests:</strong> Type <code>python3 run_tests.py</code> in the terminal!</li>
+                    </ul>
+                    <div class="guide-hint">📖 <em>Full guide available in <code>STUDENT_GUIDE.md</code>!</em></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-close-guide-footer" class="btn-retro btn-green">LET'S CODE!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Engine Script -->
+    <script src="/static/js/game.js"></script>
+</body>
+</html>
