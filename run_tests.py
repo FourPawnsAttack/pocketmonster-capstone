@@ -20,6 +20,17 @@ import os
 
 def main():
     if "--solutions" in sys.argv:
+        solutions_file = os.path.join(os.path.dirname(__file__), "solutions", "pokemon.py")
+        if not os.path.isfile(solutions_file):
+            print("\n" + "=" * 65)
+            print("  ⚠️  TEACHER REFERENCE SOLUTIONS NOT FOUND")
+            print("=" * 65)
+            print("  The 'solutions/' directory is not included in this repository.")
+            print("  Run tests against the student code workspace instead:\n")
+            print("    python3 run_tests.py\n")
+            print("=" * 65 + "\n")
+            sys.exit(1)
+
         os.environ["USE_SOLUTIONS"] = "1"
         target_name = "TEACHER REFERENCE SOLUTIONS"
     else:

@@ -21,12 +21,16 @@ app.secret_key = "pikachu-pika-super-secret-key-123"
 # In-memory storage for battle sessions
 BATTLE_SESSIONS = {}
 
+# Check whether teacher reference solutions are present in the workspace
+SOLUTIONS_DIR = os.path.join(os.path.dirname(__file__), "solutions")
+HAS_SOLUTIONS = os.path.isfile(os.path.join(SOLUTIONS_DIR, "pokemon.py"))
+
 def get_modules(use_solution=False):
     """
     Dynamically loads either the student's workspace code
     or the teacher's reference solution.
     """
-    if use_solution:
+    if use_solution and HAS_SOLUTIONS:
         import solutions.pokemon as mod_pokemon
         import solutions.starters as mod_starters
         import solutions.battle as mod_battle
@@ -113,7 +117,11 @@ def get_starters():
             "sprite": data["front_sprite"],
             "description": data["description"]
         })
-    return jsonify({"success": True, "starters": starters_info})
+    return jsonify({
+        "success": True,
+        "starters": starters_info,
+        "has_solutions": HAS_SOLUTIONS
+    })
 
 @app.route("/api/choose_starter", methods=["POST"])
 def choose_starter():
@@ -154,12 +162,16 @@ def choose_starter():
         state["enemy"] = enemy_mon
         state["potions"] = 3
         state["status"] = "BATTLE"
+        # Register starter partner in Pokédex
+        if player_mon.name not in state["pokedex"]:
+            state["pokedex"].append(player_mon.name)
 
         return jsonify({
             "success": True,
             "player": player_mon.to_dict(),
             "enemy": enemy_mon.to_dict(),
             "potions": state["potions"],
+            "pokedex": state["pokedex"],
             "dialogue": [
                 f"Professor Oak: Excellent choice! Take good care of {player_mon.name}!",
                 f"A wild {enemy_mon.name} appeared!"
@@ -511,6 +523,14 @@ def toggle_mode():
     state = get_session_state(sid)
     data = request.json or {}
     target_solution = bool(data.get("use_solution", not state["use_solution"]))
+
+    if target_solution and not HAS_SOLUTIONS:
+        return jsonify({
+            "success": False,
+            "use_solution": False,
+            "message": "Teacher reference solutions are not included in this student repository."
+        }), 400
+
     state["use_solution"] = target_solution
     mode_name = "Teacher Reference Solutions" if target_solution else "Student Code Workspace"
     return jsonify({

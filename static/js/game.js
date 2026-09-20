@@ -198,6 +198,10 @@ function setupEventListeners() {
                 body: JSON.stringify({})
             });
             const data = await res.json();
+            if (!res.ok || !data.success) {
+                setDialogue(data.message || "Teacher reference solutions unavailable.");
+                return;
+            }
             modeText.textContent = data.use_solution ? 'TEACHER SOLUTION' : 'STUDENT CODE';
             btnToggleMode.style.background = data.use_solution ? '#27ae60' : '#9b59b6';
             setDialogue(`Switched active mode to: ${data.mode_name}`);
@@ -327,6 +331,9 @@ async function loadStarters() {
         const data = await res.json();
         if (data.success) {
             renderStarterCards(data.starters);
+            if (data.has_solutions === false) {
+                btnToggleMode.classList.add('hidden');
+            }
         }
     } catch (e) {
         starterContainer.innerHTML = `<div class="error-msg">Failed to load starters: ${e.message}</div>`;
@@ -378,6 +385,10 @@ async function chooseStarter(choice) {
         state.player = data.player;
         state.enemy = data.enemy;
         state.potions = data.potions;
+        if (data.pokedex) {
+            state.pokedex = data.pokedex;
+            pokedexCount.textContent = state.pokedex.length;
+        }
 
         updateHpUI();
         updateBattleUI();
@@ -716,7 +727,7 @@ async function triggerNextBattle() {
 
 function renderPokedex() {
     if (!state.pokedex || state.pokedex.length === 0) {
-        pokedexList.innerHTML = `<div class="empty-pokedex">No Pokémon caught yet! Catch wild Pokémon during battle!</div>`;
+        pokedexList.innerHTML = `<div class="empty-pokedex">No Pokémon registered yet! Pick a starter or catch wild Pokémon during battle!</div>`;
         return;
     }
     pokedexList.innerHTML = '';
