@@ -135,8 +135,13 @@ def run_tests():
     try:
         char1 = create_starter("charmander")
         char2 = create_starter("charmander")
-        char1.take_damage(20)
-        assert char2.hp == char2.max_hp, f"Mutating char1 changed char2 HP! They must be independent objects."
+        assert char1 is not None and char2 is not None, "create_starter('charmander') returned None!"
+        if hasattr(char1, "take_damage") and callable(char1.take_damage):
+            char1.take_damage(20)
+            assert char2.hp == char2.max_hp, f"Mutating char1 changed char2 HP! They must be independent objects."
+        else:
+            char1.hp = 10
+            assert char2.hp == char2.max_hp, f"Mutating char1 changed char2 HP! They must be independent objects."
 
         char1.moves.append("SECRET_SPECIAL_MOVE")
         assert "SECRET_SPECIAL_MOVE" not in char2.moves, "Mutating char1's moves mutated char2's moves! Use list(data['moves']) to make a copy."

@@ -103,11 +103,16 @@ def run_tests():
     try:
         p_fainted = Pokemon("Caterpie", "Bug", 30, 10, 10, ["Tackle"])
         p_fainted.hp = 0
-        caught, shakes = attempt_catch(p_fainted, "poke-ball")
+        res = attempt_catch(p_fainted, "poke-ball")
+        assert res is not None, "attempt_catch on 0 HP target returned None!"
+        assert isinstance(res, (tuple, list)) and len(res) == 2, f"Expected tuple of (caught, shakes), got {res}"
+        caught, shakes = res
         assert isinstance(caught, bool) and isinstance(shakes, int)
         assert 0 <= shakes <= 3
         print("  [PASS] ⭐ 4.5 [EDGE CASE]: attempt_catch safely processes 0 HP targets")
         passed += 1
+    except AssertionError as e:
+        print(f"  [FAIL] ⚠️  4.5 0 HP Catch Error: {e}")
     except Exception as e:
         print(f"  [FAIL] ⚠️  4.5 0 HP Catch Error: {e}")
 
@@ -116,10 +121,15 @@ def run_tests():
     try:
         p_over = Pokemon("Chansey", "Normal", 100, 10, 10, ["Tackle"])
         p_over.hp = 150 # Bugged/overhealed
-        caught, shakes = attempt_catch(p_over, "poke-ball")
+        res = attempt_catch(p_over, "poke-ball")
+        assert res is not None, "attempt_catch on overhealed target returned None!"
+        assert isinstance(res, (tuple, list)) and len(res) == 2, f"Expected tuple of (caught, shakes), got {res}"
+        caught, shakes = res
         assert isinstance(caught, bool) and 0 <= shakes <= 3
         print("  [PASS] ⭐ 4.6 [EDGE CASE]: attempt_catch handles overhealed HP without negative probabilities")
         passed += 1
+    except AssertionError as e:
+        print(f"  [FAIL] ⚠️  4.6 Overhealed HP Error: {e}")
     except Exception as e:
         print(f"  [FAIL] ⚠️  4.6 Overhealed HP Error: {e}")
 
@@ -130,12 +140,17 @@ def run_tests():
         p.hp = 25
         result_custom = attempt_catch(p, "luxury-ball")
         result_blank = attempt_catch(p, "")
-        assert result_custom is not None and result_blank is not None
+        assert result_custom is not None, "attempt_catch(p, 'luxury-ball') returned None!"
+        assert result_blank is not None, "attempt_catch(p, '') returned None!"
+        assert isinstance(result_custom, (tuple, list)) and len(result_custom) == 2, f"Expected (caught, shakes) tuple, got {result_custom}"
+        assert isinstance(result_blank, (tuple, list)) and len(result_blank) == 2, f"Expected (caught, shakes) tuple, got {result_blank}"
         print("  [PASS] ⭐ 4.7 [EDGE CASE]: attempt_catch falls back safely on unknown ball types")
         passed += 1
     except KeyError as e:
         print(f"  [FAIL] ⚠️  4.7 KeyError on unknown ball: {e}")
         print("         Hint: Use `BALL_MODIFIERS.get(ball_type, 1.0)` instead of direct dictionary indexing!")
+    except AssertionError as e:
+        print(f"  [FAIL] ⚠️  4.7 Return Format Error: {e}")
     except Exception as e:
         print(f"  [FAIL] ⚠️  4.7 Error: {e}")
 
@@ -144,13 +159,18 @@ def run_tests():
     try:
         p_zero_max = Pokemon("Ghost", "Ghost", 0, 10, 10, ["Tackle"])
         p_zero_max.max_hp = 0
-        caught, shakes = attempt_catch(p_zero_max, "poke-ball")
+        res = attempt_catch(p_zero_max, "poke-ball")
+        assert res is not None, "attempt_catch on 0 max HP target returned None!"
+        assert isinstance(res, (tuple, list)) and len(res) == 2, f"Expected tuple of (caught, shakes), got {res}"
+        caught, shakes = res
         assert isinstance(caught, bool) and 0 <= shakes <= 3
         print("  [PASS] ⭐ 4.8 [EDGE CASE]: attempt_catch prevents ZeroDivisionError when max_hp is 0")
         passed += 1
     except ZeroDivisionError:
         print("  [FAIL] ⚠️  4.8 ZeroDivisionError when max_hp is 0!")
         print("         Hint: Guard with `max_hp = max(1, getattr(wild_pokemon, 'max_hp', 50))`")
+    except AssertionError as e:
+        print(f"  [FAIL] ⚠️  4.8 Zero Max HP Catch Error: {e}")
     except Exception as e:
         print(f"  [FAIL] ⚠️  4.8 Error: {e}")
 

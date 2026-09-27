@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Dashboard - Pokémon Code Adventure</title>
+    <!-- Retro Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Retro Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .progress-page-header {
+            width: 100%;
+            max-width: 960px;
+            background: #2c3e50;
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0 #000;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .partner-summary-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8f9f9;
+            border: 2px solid #000;
+            padding: 10px;
+            margin-top: 6px;
+        }
+
+        .partner-summary-sprite {
+            width: 56px;
+            height: 56px;
+            image-rendering: pixelated;
+        }
+
+        .partner-summary-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 8px;
+            flex: 1;
+        }
+
+        .partner-moves-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .move-pill {
+            background: #34495e;
+            color: #fff;
+            padding: 2px 6px;
+            font-size: 7px;
+            border-radius: 3px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP HEADER BAR -->
+    <header class="progress-page-header">
+        <div class="nav-brand">
+            <span class="pokeball-icon">🔴</span>
+            <span class="title">PROGRESSION DASHBOARD</span>
+        </div>
+        <div class="nav-actions">
+            <a href="/" class="btn-retro btn-small btn-green">🎮 RETURN TO ARENA</a>
+            <button id="btn-toggle-mode" class="btn-retro btn-small btn-mode" title="Toggle between Student Code and Reference Solutions">
+                MODE: <span id="mode-text">STUDENT CODE</span>
+            </button>
+            <button id="btn-run-tests" class="btn-retro btn-small btn-yellow">🔄 RUN TESTS</button>
+        </div>
+    </header>
+
+    <main class="progress-container">
+
+        <!-- TOP HERO CARDS: CODE PROGRESS vs GAME PROGRESS -->
+        <div class="progress-hero-grid">
+
+            <!-- CARD 1: CODE ENGINEERING PROGRESS -->
+            <div class="progress-hero-card">
+                <div class="hero-header">
+                    <h3>💻 CODE PROGRESS</h3>
+                    <span id="code-status-pill" class="mission-status-pill in-progress">ANALYZING...</span>
+                </div>
+                <p style="font-size: 8px; color: #666;">Automated verification of your Python missions via unit tests:</p>
+                <div class="progress-bar-large">
+                    <div id="code-bar-fill" class="progress-bar-large-fill" style="width: 0%;"></div>
+                </div>
+                <div class="hero-stats-row">
+                    <span>Missions Completed: <strong id="missions-completed-count">0 / 7</strong></span>
+                    <span>Tests Passing: <strong id="tests-passing-count">0 / 0</strong></span>
+                </div>
+                <div id="code-feedback-text" style="font-size: 8px; font-weight: bold; color: #2980b9; margin-top: 4px;">
+                    Running automated test suites...
+                </div>
+            </div>
+
+            <!-- CARD 2: GAME ADVENTURE PROGRESS -->
+            <div class="progress-hero-card">
+                <div class="hero-header">
+                    <h3>🎒 ADVENTURE PROGRESS</h3>
+                    <span id="gym-badges-count-pill" class="mission-status-pill completed">0 / 5 BADGES</span>
+                </div>
+                <div id="player-profile-container">
+                    <div class="partner-summary-box">
+                        <img id="partner-sprite" class="partner-summary-sprite" src="/static/images/sprites/pikachu.gif" alt="Partner">
+                        <div class="partner-summary-info">
+                            <div><strong id="partner-name">NO PARTNER CHOSEN</strong> <span id="partner-level" class="badge-level">Lv. 5</span></div>
+                            <div>HP: <strong id="partner-hp">-- / --</strong> | ATK: <strong id="partner-atk">--</strong> | DEF: <strong id="partner-def">--</strong></div>
+                            <div class="hud-exp-container" style="margin: 4px 0;">
+                                <span class="exp-label">EXP</span>
+                                <div class="exp-bar-bg" style="height: 8px;">
+                                    <div id="partner-exp-fill" class="exp-bar-fill" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <div class="partner-moves-list" id="partner-moves-container">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-stats-row" style="margin-top: 8px;">
+                    <span>Pokédex Registered: <strong id="pokedex-registered-count">0 / 15</strong></span>
+                    <span>Battles Won: <strong id="battles-won-count">0</strong></span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SECTION: GYM BADGE CASE -->
+        <section class="missions-section">
+            <div class="section-header-bar">
+                <h3 class="section-title">🏆 KANTO GYM BADGE CASE</h3>
+                <span style="font-size: 8px; color: #7f8c8d;">Earn badges by defeating Gym Leaders in the Arena!</span>
+            </div>
+            <div class="badge-case" id="gym-badge-case">
+                <!-- Badges populated dynamically -->
+                <div class="badge-slot locked" data-badge="boulder">
+                    <div class="badge-slot-icon">🪨</div>
+                    <span class="badge-slot-label">BOULDER</span>
+                </div>
+                <div class="badge-slot locked" data-badge="cascade">
+                    <div class="badge-slot-icon">💧</div>
+                    <span class="badge-slot-label">CASCADE</span>
+                </div>
+                <div class="badge-slot locked" data-badge="thunder">
+                    <div class="badge-slot-icon">⚡</div>
+                    <span class="badge-slot-label">THUNDER</span>
+                </div>
+                <div class="badge-slot locked" data-badge="rainbow">
+                    <div class="badge-slot-icon">🌈</div>
+                    <span class="badge-slot-label">RAINBOW</span>
+                </div>
+                <div class="badge-slot locked" data-badge="earth">
+                    <div class="badge-slot-icon">🌍</div>
+                    <span class="badge-slot-label">EARTH</span>
+                </div>
+            </div>
+            <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <p id="gym-next-target-text" style="font-size: 9px; color: #2c3e50; font-weight: bold;">
+                    Next Gym Challenge: Pewter Gym (Leader Brock)
+                </p>
+                <a href="/" class="btn-retro btn-small btn-blue">⚔️ CHALLENGE GYMS IN ARENA</a>
+            </div>
+        </section>
+
+        <!-- SECTION: CODE MISSIONS & TEST RUNNER -->
+        <section class="missions-section">
+            <div class="section-header-bar">
+                <h3 class="section-title">📋 CODE MISSIONS & TEST RESULTS</h3>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <span style="font-size: 8px; color: #7f8c8d;">Click any mission to inspect tests</span>
+                    <button id="btn-retest" class="btn-retro btn-small btn-yellow">🔄 RE-RUN</button>
+                </div>
+            </div>
+
+            <!-- DYNAMIC LIST OF MISSIONS -->
+            <div id="missions-list">
+                <div style="font-size: 10px; padding: 20px; text-align: center; color: #7f8c8d;">
+                    <span class="loading-spinner">⌛</span> Running unit tests for all missions...
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: REGISTERED POKEDEX SHOWCASE -->
+        <section class="missions-section">
+            <div class="section-header-bar">
+                <h3 class="section-title">📖 POKÉDEX REGISTERED SPECIES</h3>
+                <span id="pokedex-summary-text" style="font-size: 8px; color: #27ae60; font-weight: bold;">0 Registered</span>
+            </div>
+            <p style="font-size: 8px; color: #555; margin-bottom: 8px;">
+                Pokémon caught in the Safari or chosen as partners during this adventure:
+            </p>
+            <div class="progress-pokedex-grid" id="progress-pokedex-container">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
+
+        <!-- BOTTOM RETURN TO PLAY CALL TO ACTION -->
+        <div style="text-align: center; margin-top: 8px;">
+            <a href="/" class="btn-retro btn-green btn-large" style="display: block; padding: 14px; font-size: 11px; text-decoration: none;">
+                🎮 RETURN TO BATTLE ARENA & PLAY NORMALLY ⚔️
+            </a>
+        </div>
+
+    </main>
+
+    <!-- PROGRESS DASHBOARD SCRIPT -->
+    <script>
+        const state = {
+            code_progress: null,
+            game_progress: null,
+            use_solution: false,
+            loading: false
+        };
+
+        const modeText = document.getElementById('mode-text');
+        const btnToggleMode = document.getElementById('btn-toggle-mode');
+        const btnRunTests = document.getElementById('btn-run-tests');
+        const btnRetest = document.getElementById('btn-retest');
+
+        async function fetchProgress(forceSolution = null) {
+            state.loading = true;
+            btnRunTests.innerHTML = '⌛ RUNNING...';
+            if (btnRetest) btnRetest.innerHTML = '⌛ RUNNING...';
+
+            try {
+                let url = '/api/progress';
+                if (forceSolution !== null) {
+                    url += `?use_solution=${forceSolution ? 1 : 0}`;
+                }
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.success) {
+                    state.code_progress = data.code_progress;
+                    state.game_progress = data.game_progress;
+                    state.use_solution = data.code_progress.use_solutions;
+                    renderDashboard();
+                }
+            } catch (err) {
+                console.error("Failed to fetch progress:", err);
+            } finally {
+                state.loading = false;
+                btnRunTests.innerHTML = '🔄 RUN TESTS';
+                if (btnRetest) btnRetest.innerHTML = '🔄 RE-RUN';
+            }
+        }
+
+        async function toggleMode() {
+            try {
+                const res = await fetch('/api/toggle_mode', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                const data = await res.json();
+                if (data.success) {
+                    state.use_solution = data.use_solution;
+                    await fetchProgress(data.use_solution);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderDashboard() {
+            const cp = state.code_progress;
+            const gp = state.game_progress;
+
+            // 1. Update Mode
+            modeText.textContent = state.use_solution ? 'TEACHER SOLUTION' : 'STUDENT CODE';
+            btnToggleMode.style.background = state.use_solution ? '#27ae60' : '#9b59b6';
+
+            // 2. Code Progress Hero Card
+            const codeBarFill = document.getElementById('code-bar-fill');
+            const codeStatusPill = document.getElementById('code-status-pill');
+            const missionsCount = document.getElementById('missions-completed-count');
+            const testsCount = document.getElementById('tests-passing-count');
+            const feedbackText = document.getElementById('code-feedback-text');
+
+            if (cp) {
+                codeBarFill.style.width = `${cp.percent_completed}%`;
+                missionsCount.textContent = `${cp.missions_completed} / ${cp.total_missions}`;
+                testsCount.textContent = `${cp.total_tests_passed} / ${cp.total_tests_count}`;
+
+                if (cp.missions_completed === cp.total_missions) {
+                    codeStatusPill.textContent = 'ALL PASSED ⭐';
+                    codeStatusPill.className = 'mission-status-pill completed';
+                    feedbackText.textContent = '🏆 Outstanding! All mission test cases are passing!';
+                    feedbackText.style.color = '#27ae60';
+                } else {
+                    codeStatusPill.textContent = `${cp.percent_completed}% READY`;
+                    codeStatusPill.className = 'mission-status-pill in-progress';
+                    feedbackText.textContent = `Keep going! ${cp.missions_completed} of ${cp.total_missions} missions complete. Check hints below!`;
+                    feedbackText.style.color = '#e67e22';
+                }
+            }
+
+            // 3. Game Progress Hero Card & Partner Profile
+            if (gp) {
+                const badgesPill = document.getElementById('gym-badges-count-pill');
+                const pokedexCount = document.getElementById('pokedex-registered-count');
+                const battlesCount = document.getElementById('battles-won-count');
+
+                badgesPill.textContent = `${gp.badges.length} / ${gp.total_badges} BADGES`;
+                pokedexCount.textContent = `${gp.pokedex.length} / ${gp.pokedex_total}`;
+                battlesCount.textContent = gp.battle_count;
+
+                const p = gp.player;
+                if (p) {
+                    document.getElementById('partner-name').textContent = p.name.toUpperCase();
+                    document.getElementById('partner-level').textContent = `Lv. ${p.level || 5}`;
+                    document.getElementById('partner-hp').textContent = `${p.hp} / ${p.max_hp}`;
+                    document.getElementById('partner-atk').textContent = p.attack;
+                    document.getElementById('partner-def').textContent = p.defense;
+                    document.getElementById('partner-sprite').src = p.front_sprite || p.back_sprite || '/static/images/sprites/pikachu.gif';
+
+                    const expPct = Math.min(100, Math.max(0, ((p.exp || 0) / 100) * 100));
+                    document.getElementById('partner-exp-fill').style.width = `${expPct}%`;
+
+                    const movesContainer = document.getElementById('partner-moves-container');
+                    movesContainer.innerHTML = '';
+                    (p.moves || []).forEach(m => {
+                        const span = document.createElement('span');
+                        span.className = 'move-pill';
+                        span.textContent = m;
+                        movesContainer.appendChild(span);
+                    });
+                }
+
+                // 4. Gym Badges Display
+                const badgeSlots = document.querySelectorAll('.badge-slot');
+                badgeSlots.forEach(slot => {
+                    const bId = slot.getAttribute('data-badge');
+                    if (gp.badges.includes(bId)) {
+                        slot.className = 'badge-slot earned';
+                    } else {
+                        slot.className = 'badge-slot locked';
+                    }
+                });
+
+                // Next Gym Target Text
+                const nextGymText = document.getElementById('gym-next-target-text');
+                const nextGym = (gp.gyms || []).find(g => !g.is_defeated && g.is_unlocked);
+                if (nextGym) {
+                    nextGymText.textContent = `Next Gym Challenge: ${nextGym.name} (${nextGym.city}) — Leader ${nextGym.leader}!`;
+                } else if (gp.badges.length >= gp.total_badges) {
+                    nextGymText.textContent = `👑 Congratulations! You defeated all 5 Gym Leaders and conquered the Kanto League!`;
+                } else {
+                    nextGymText.textContent = `Next Gym Challenge: Pewter Gym (Leader Brock)!`;
+                }
+
+                // 5. Pokedex Grid
+                renderPokedex(gp.pokedex);
+            }
+
+            // 6. Mission Breakdown Cards
+            if (cp && cp.missions) {
+                renderMissions(cp.missions);
+            }
+        }
+
+        function renderMissions(missions) {
+            const container = document.getElementById('missions-list');
+            container.innerHTML = '';
+
+            missions.forEach(m => {
+                const card = document.createElement('div');
+                card.className = `mission-card ${m.completed ? 'completed' : 'in-progress'}`;
+
+                const header = document.createElement('div');
+                header.className = 'mission-header';
+                header.innerHTML = `
+                    <div class="mission-title-group">
+                        <span class="mission-status-pill ${m.completed ? 'completed' : 'in-progress'}">
+                            ${m.completed ? 'COMPLETED ⭐' : 'IN PROGRESS ⏳'}
+                        </span>
+                        <span class="mission-name">${m.name}</span>
+                        <span class="mission-target-file">${m.file}</span>
+                    </div>
+                    <div class="mission-score" style="color: ${m.completed ? '#27ae60' : '#e67e22'};">
+                        ${m.passed} / ${m.total} PASSING ▾
+                    </div>
+                `;
+
+                const testList = document.createElement('div');
+                testList.className = 'mission-tests-list';
+
+                // Concept explanation
+                const conceptDiv = document.createElement('div');
+                conceptDiv.style.fontSize = '8px';
+                conceptDiv.style.color = '#555';
+                conceptDiv.style.marginBottom = '6px';
+                conceptDiv.innerHTML = `<strong>Concept:</strong> ${m.concept}`;
+                testList.appendChild(conceptDiv);
+
+                // Passes
+                (m.pass_items || []).forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'test-item pass';
+                    el.textContent = item;
+                    testList.appendChild(el);
+                });
+
+                // Fails & Hints
+                (m.fail_items || []).forEach((failItem, idx) => {
+                    const el = document.createElement('div');
+                    el.className = 'test-item fail';
+                    el.textContent = failItem;
+
+                    if (m.hint_items && m.hint_items[idx]) {
+                        const hint = document.createElement('div');
+                        hint.className = 'test-hint';
+                        hint.textContent = `💡 ${m.hint_items[idx]}`;
+                        el.appendChild(hint);
+                    }
+                    testList.appendChild(el);
+                });
+
+                header.addEventListener('click', () => {
+                    testList.classList.toggle('hidden');
+                });
+
+                card.appendChild(header);
+                card.appendChild(testList);
+                container.appendChild(card);
+            });
+        }
+
+        function renderPokedex(pokedexList) {
+            const container = document.getElementById('progress-pokedex-container');
+            const summaryText = document.getElementById('pokedex-summary-text');
+            container.innerHTML = '';
+
+            if (!pokedexList || pokedexList.length === 0) {
+                container.innerHTML = '<div style="font-size: 8px; color: #888; grid-column: 1 / -1; padding: 12px; text-align: center;">No Pokémon registered yet. Catch wild Pokémon in the Arena!</div>';
+                summaryText.textContent = '0 Registered';
+                return;
+            }
+
+            summaryText.textContent = `${pokedexList.length} Registered`;
+
+            pokedexList.forEach(name => {
+                const item = document.createElement('div');
+                item.className = 'progress-mon-item';
+                const spriteUrl = `/static/images/sprites/${name.toLowerCase()}.gif`;
+                item.innerHTML = `
+                    <img src="${spriteUrl}" alt="${name}" onerror="this.src='/static/images/sprites/pikachu.gif'">
+                    <strong>${name.toUpperCase()}</strong>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        btnToggleMode.addEventListener('click', toggleMode);
+        btnRunTests.addEventListener('click', () => fetchProgress(state.use_solution));
+        if (btnRetest) btnRetest.addEventListener('click', () => fetchProgress(state.use_solution));
+
+        // Initial Load
+        fetchProgress();
+    </script>
+</body>
+</html>

@@ -124,12 +124,17 @@ def run_tests():
         p2 = Pokemon("Pidgey", "Flying", 40, 30, 30, ["Tackle"])
         res_case = calculate_damage("swift", p1, p2) # lowercase
         res_unknown = calculate_damage("NonExistentMove999", p1, p2) # unknown move
-        assert res_case is not None and res_unknown is not None
+        assert res_case is not None, "calculate_damage('swift', ...) returned None!"
+        assert res_unknown is not None, "calculate_damage('NonExistentMove999', ...) returned None!"
+        assert isinstance(res_case, tuple) and len(res_case) == 3, f"Expected 3-item tuple for 'swift', got {res_case}"
+        assert isinstance(res_unknown, tuple) and len(res_unknown) == 3, f"Expected 3-item tuple for unknown move, got {res_unknown}"
         print("  [PASS] ⭐ 3.7 [EDGE CASE]: calculate_damage gracefully handles unknown and lowercase moves")
         passed += 1
     except KeyError as e:
         print(f"  [FAIL] ⚠️  3.7 KeyError on move name: {e}")
         print("         Hint: Use `MOVES.get(move_name, default_dict)` instead of `MOVES[move_name]`!")
+    except AssertionError as e:
+        print(f"  [FAIL] ⚠️  3.7 Return Format Error: {e}")
     except Exception as e:
         print(f"  [FAIL] ⚠️  3.7 Error: {e}")
 
@@ -152,16 +157,20 @@ def run_tests():
     total += 1
     try:
         solo_enemy = Pokemon("Ditto", "Normal", 40, 40, 40, ["Transform"])
-        assert choose_enemy_move(solo_enemy) == "Transform"
+        move_solo = choose_enemy_move(solo_enemy)
+        assert move_solo == "Transform", f"Expected 'Transform' for single move set, got '{move_solo}'"
 
         empty_enemy = Pokemon("Baby", "Normal", 10, 10, 10, [])
         fallback_move = choose_enemy_move(empty_enemy)
-        assert isinstance(fallback_move, str) and len(fallback_move) > 0
+        assert fallback_move is not None, "choose_enemy_move on empty moveset returned None!"
+        assert isinstance(fallback_move, str) and len(fallback_move) > 0, f"Expected non-empty string fallback move (e.g. 'Tackle'), got {fallback_move}"
         print("  [PASS] ⭐ 3.9 [EDGE CASE]: choose_enemy_move handles 1-move and empty move sets safely")
         passed += 1
     except IndexError as e:
         print(f"  [FAIL] ⚠️  3.9 IndexError choosing from empty moves list: {e}")
         print("         Hint: Check `if not enemy_pokemon.moves: return 'Tackle'` before random.choice!")
+    except AssertionError as e:
+        print(f"  [FAIL] ⚠️  3.9 Enemy Move Error: {e}")
     except Exception as e:
         print(f"  [FAIL] ⚠️  3.9 Error: {e}")
 

@@ -61,7 +61,9 @@ pokemon-capstone/
 | **Mission 2** | `starters.py` | Dictionaries & Strings | Helping Professor Oak look up starter Pokémon data and create chosen partners. |
 | **Mission 3** | `battle.py` | Math & Randomness | Calculating attack damage, critical hits (10% roll), and enemy moves. |
 | **Mission 4** | `catching.py` | Percentages & Logic | Calculating Pokéball catch chances and suspenseful ball shake counts. |
+| **Mission 5** | `pokemon.py` | Stat Growth & Evolution | Earning EXP from battles, leveling up stats, learning moves, and evolving! |
 | **Bonus** | `poke_type.py` | Type Object Pattern | Modeling elemental types (Fire, Water, Grass) and their interactions. |
+| **Pre-built** | `gym.py` | Progression & League Rules | Completed system for Kanto Gym Leaders, earning badges, and unlocking the League! |
 
 ---
 
@@ -103,11 +105,13 @@ Always run tests to check student progress or verify code integrity:
   ```
 - **Run individual mission tests**:
   ```bash
-  python3 tests/test_pokemon.py    # Mission 1
-  python3 tests/test_starters.py   # Mission 2
-  python3 tests/test_battle.py     # Mission 3
-  python3 tests/test_catching.py   # Mission 4
-  python3 tests/test_poke_type.py  # Elemental Type System
+  python3 tests/test_pokemon.py     # Mission 1: Pokemon Class
+  python3 tests/test_starters.py    # Mission 2: Starter Lab
+  python3 tests/test_battle.py      # Mission 3: Battle Engine
+  python3 tests/test_catching.py    # Mission 4: Safari Catching
+  python3 tests/test_progression.py # Mission 5: Level Up & Evolution
+  python3 tests/test_gym.py         # Gym Progression System (Pre-built)
+  python3 tests/test_poke_type.py   # Elemental Type System
   ```
 
 ---

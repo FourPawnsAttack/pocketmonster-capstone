@@ -54,12 +54,32 @@ def main():
         "Mission 4: Safari Catching": test_m4(),
     }
 
+    run_bonus = "--bonus" in sys.argv or "--all" in sys.argv
+    if run_bonus:
+        from tests.test_poke_type import run_tests as test_bonus
+        results["Bonus: Elemental Type System"] = test_bonus()
+
+    run_progression = "--progression" in sys.argv or "--all" in sys.argv
+    if run_progression:
+        from tests.test_progression import run_tests as test_m5
+        results["Mission 5: Level Up & Evolution"] = test_m5()
+
+    if "--gym" in sys.argv:
+        from tests.test_gym import run_tests as test_gym
+        test_gym()
+
+    run_team = "--team" in sys.argv or "--all" in sys.argv
+    if run_team:
+        from tests.test_team import run_tests as test_m7
+        results["Mission 7: 4-Pokémon Party & Team System"] = test_m7()
+
     print("=" * 65)
     print("                    MISSION SUMMARY REPORT")
     print("=" * 65)
     
     all_passed = True
     passed_count = sum(1 for res in results.values() if res)
+    total_missions = len(results)
 
     for mission, passed in results.items():
         if passed:
@@ -70,10 +90,14 @@ def main():
 
     print("-" * 65)
     if all_passed:
-        print(f"  🏆 CONGRATULATIONS! ALL {passed_count}/4 MISSIONS COMPLETED!")
+        print(f"  🏆 CONGRATULATIONS! ALL {passed_count}/{total_missions} MISSIONS COMPLETED!")
         print("  Your Pokémon Battle Game is fully powered and ready to play!")
+        if not run_bonus:
+            print("  💡 Tip: Try the bonus elemental type challenge: python3 run_tests.py --bonus")
+        if not run_progression:
+            print("  💡 Tip: Test the evolution & level up system: python3 run_tests.py --progression")
     else:
-        print(f"  Keep going! {passed_count}/4 missions completed.")
+        print(f"  Keep going! {passed_count}/{total_missions} missions completed.")
         print("  Check the hints above to solve the remaining missions!")
     print("=" * 65 + "\n")
 

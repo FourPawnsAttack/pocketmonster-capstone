@@ -29,13 +29,14 @@ You will see friendly star badges ⭐ as you pass each test!
 
 ---
 
-## 🗺️ The 4 Pokémon Missions
+## 🗺️ The Pokémon Coding Missions
 
 ```
 Mission 1: pokemon.py   --> Build the Pokémon Blueprint (Classes & Objects)
 Mission 2: starters.py  --> Professor Oak's Starter Lab (Dictionaries & Strings)
 Mission 3: battle.py    --> The Battle Engine (Damage Math & Enemy AI)
 Mission 4: catching.py  --> Safari Catching (Probabilities & Pokéballs)
+Mission 5: pokemon.py   --> Level Up & Evolution (Stat Growth, Moves & Evolution)
 ```
 
 ---
@@ -166,6 +167,83 @@ Throw Pokéballs and calculate whether a wild Pokémon is caught or breaks free!
        - If `roll < total_chance + 0.15`: Return `False, 2` (broke out on 2nd shake!).
        - Else if `roll < total_chance + 0.35`: Return `False, 1`.
        - Else: Return `False, 0` (broke out immediately!).
+
+---
+
+## ✨ Mission 5: Leveling Up & Evolution (`pokemon.py`)
+**Test with:** `python3 tests/test_progression.py`
+
+### 🎯 Your Goal
+Make your Pokémon grow stronger with battle experience! Level up to boost stats, learn new moves when hitting milestone levels, and evolve into powerhouse forms with new sprites!
+
+### 📝 What to Code in `pokemon.py`
+
+1. **`gain_exp(self, amount)`**:
+   - If `amount <= 0`, return `False`.
+   - Add `amount` to `self.exp`.
+   - Use a `while` loop: `while self.exp >= 100:`
+     - Subtract 100: `self.exp = self.exp - 100`
+     - Call `self.level_up()`!
+     - Remember that the Pokémon leveled up (`leveled = True`).
+   - Return `True` if leveled up, else `False`.
+
+2. **`level_up(self)`**:
+   - Increase `self.level` by 1.
+   - Boost stats: `self.max_hp += 5`, `self.attack += 3`, `self.defense += 2`.
+   - Fully restore health: `self.hp = self.max_hp`.
+   - Look up `LEARNABLE_MOVES` for `self.name`. If a move unlocks at `self.level`, call `self.learn_move(move_name)`.
+   - Call `self.check_evolution()`.
+   - Return a dictionary with:
+     ```python
+     return {
+         "level": self.level,
+         "max_hp": self.max_hp,
+         "attack": self.attack,
+         "defense": self.defense,
+         "evolution": evo_result
+     }
+     ```
+
+3. **`learn_move(self, new_move)`**:
+   - If `new_move in self.moves`, return `False` (no duplicate moves!).
+   - If `len(self.moves) < 4`:
+     - Append `new_move` to `self.moves`.
+   - Else (already know 4 moves):
+     - Drop the oldest move: `self.moves.pop(0)`.
+     - Append `new_move` to `self.moves`.
+   - Return `True`.
+
+4. **`check_evolution(self)`**:
+   - Check if `self.name in EVOLUTION_DATA`.
+   - If yes and `self.level >= data["evolves_at"]`:
+     - Save `old_name = self.name`.
+     - Update name: `self.name = data["evolves_into"]`.
+     - Add stat bonuses:
+       - `self.max_hp += data["stat_boost"]["max_hp"]`
+       - `self.attack += data["stat_boost"]["attack"]`
+       - `self.defense += data["stat_boost"]["defense"]`
+       - `self.hp = self.max_hp`
+     - Update sprites: `self.front_sprite = data["front_sprite"]` and `self.back_sprite = data["back_sprite"]`.
+     - If `data.get("new_move")`, call `self.learn_move(data["new_move"])`.
+     - Return a dictionary with the evolution details!
+   - If not ready to evolve, return `None`.
+
+---
+
+## 🏛️ The Gym Progression System (`gym.py`)
+
+The Gym Progression System is **already complete and built into the game**! You don't need to write code for this module. Once your Pokémon is ready, you can challenge official Pokémon Gym Leaders (Brock, Misty, Lt. Surge, Erika, and Giovanni), earn official League Badges, and test your battle strategies in the arena!
+
+---
+
+## 📊 Code & Game Progress Dashboard (`/progress`)
+
+Check your journey anytime by clicking **📊 PROGRESS** in the top navigation bar!
+- **💻 Code Progress**: Runs automated unit tests in real time. Shows pass/fail status and clickable hint cards for each mission!
+- **🎒 Adventure Progress**: Live status of your partner Pokémon (HP, Attack, Defense, Level, EXP bar, moves).
+- **🏆 Gym Badge Case**: Shows which official Kanto Badges you've earned (Boulder, Cascade, Thunder, Rainbow, Earth).
+- **📖 Pokédex Registered**: Visual collection of all Pokémon you've caught in the wild or trained.
+- **🎮 Return to Arena**: Seamlessly return to wild battles and Gym challenges anytime!
 
 ---
 

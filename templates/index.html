@@ -19,8 +19,18 @@
             <span class="pokeball-icon">🔴</span>
             <span class="title">POKÉMON CODE ADVENTURE</span>
         </div>
+        <div class="nav-partner-card hidden" id="nav-partner-card">
+            <img id="nav-partner-sprite" class="nav-mini-sprite" src="/static/images/sprites/pikachu.gif" alt="Partner">
+            <div class="nav-partner-details">
+                <span id="nav-partner-name" class="nav-partner-name">PIKACHU</span>
+                <span id="nav-partner-level" class="badge-level">Lv. 5</span>
+                <span id="nav-partner-exp" class="badge-exp">EXP: 0/100</span>
+            </div>
+        </div>
         <div class="nav-actions">
             <button id="btn-sound" class="btn-retro btn-small" title="Toggle Sound">🔊 SOUND: ON</button>
+            <button id="btn-gyms" class="btn-retro btn-small" title="Challenge Gym Leaders and Earn Badges">🏛️ GYMS (<span id="badges-count">0/5</span>)</button>
+            <a href="/progress" class="btn-retro btn-small" title="View Code & Game Progress" style="text-decoration: none; color: inherit;">📊 PROGRESS</a>
             <button id="btn-guide" class="btn-retro btn-small" title="Trainer Guide & Mission Hints">📜 GUIDE</button>
             <button id="btn-pokedex" class="btn-retro btn-small" title="View Caught Pokémon">📖 POKÉDEX (<span id="pokedex-count">0</span>)</button>
             <button id="btn-toggle-mode" class="btn-retro btn-small btn-mode" title="Click to toggle between Student Code and Reference Solution">
@@ -57,51 +67,65 @@
                 <!-- Battlefield Scenery -->
                 <div class="sky-background"></div>
                 
-                <!-- ENEMY HUD & SPRITE -->
-                <div class="enemy-area">
-                    <div class="hud-box enemy-hud">
-                        <div class="hud-header">
-                            <span id="enemy-name" class="hud-name">WILD POKÉMON</span>
-                            <span class="hud-level">Lv. 5</span>
-                        </div>
-                        <div class="hud-hp-container">
-                            <span class="hp-label">HP</span>
-                            <div class="hp-bar-bg">
-                                <div id="enemy-hp-fill" class="hp-bar-fill hp-green" style="width: 100%;"></div>
-                            </div>
-                        </div>
-                        <div class="hud-hp-text">
-                            <span id="enemy-hp-cur">40</span> / <span id="enemy-hp-max">40</span>
+                <!-- TOP-LEFT: ENEMY HUD -->
+                <div class="hud-box enemy-hud">
+                    <div class="hud-header">
+                        <span id="enemy-badge-icon" class="hidden" style="margin-right: 2px;"></span>
+                        <span id="enemy-name" class="hud-name">WILD POKÉMON</span>
+                        <span id="enemy-level" class="hud-level">Lv. 5</span>
+                    </div>
+                    <div class="hud-hp-container">
+                        <span class="hp-label">HP</span>
+                        <div class="hp-bar-bg">
+                            <div id="enemy-hp-fill" class="hp-bar-fill hp-green" style="width: 100%;"></div>
                         </div>
                     </div>
-
-                    <div class="platform enemy-platform">
-                        <img id="enemy-sprite" class="sprite enemy-sprite" src="/static/images/sprites/bulbasaur.gif" alt="Enemy Pokémon">
-                        <div id="enemy-damage-float" class="damage-float"></div>
+                    <div class="hud-hp-text">
+                        <span id="enemy-hp-cur">40</span> / <span id="enemy-hp-max">40</span>
                     </div>
                 </div>
 
-                <!-- PLAYER HUD & SPRITE -->
-                <div class="player-area">
-                    <div class="platform player-platform">
-                        <img id="player-sprite" class="sprite player-sprite" src="/static/images/sprites/charmander_back.gif" alt="Player Pokémon">
-                        <div id="player-damage-float" class="damage-float"></div>
-                    </div>
+                <!-- TOP-RIGHT: ENEMY PLATFORM & SPRITE -->
+                <div class="platform enemy-platform">
+                    <img id="enemy-sprite" class="sprite enemy-sprite" src="/static/images/sprites/bulbasaur.gif" alt="Enemy Pokémon">
+                    <div id="enemy-damage-float" class="damage-float"></div>
+                </div>
 
-                    <div class="hud-box player-hud">
-                        <div class="hud-header">
-                            <span id="player-name" class="hud-name">CHARMANDER</span>
-                            <span class="hud-level">Lv. 5</span>
+                <!-- BOTTOM-LEFT: PLAYER PLATFORM & SPRITE -->
+                <div class="platform player-platform">
+                    <img id="player-sprite" class="sprite player-sprite" src="/static/images/sprites/charmander_back.gif" alt="Player Pokémon">
+                    <div id="player-damage-float" class="damage-float"></div>
+                </div>
+
+                <!-- BOTTOM-RIGHT: PLAYER HUD -->
+                <div class="hud-box player-hud">
+                    <div class="hud-header">
+                        <span id="player-name" class="hud-name">CHARMANDER</span>
+                        <span id="player-level" class="hud-level">Lv. 5</span>
+                    </div>
+                    <div class="hud-hp-container">
+                        <span class="hp-label">HP</span>
+                        <div class="hp-bar-bg">
+                            <div id="player-hp-fill" class="hp-bar-fill hp-green" style="width: 100%;"></div>
                         </div>
-                        <div class="hud-hp-container">
-                            <span class="hp-label">HP</span>
-                            <div class="hp-bar-bg">
-                                <div id="player-hp-fill" class="hp-bar-fill hp-green" style="width: 100%;"></div>
-                            </div>
+                    </div>
+                    <div class="hud-hp-text">
+                        <span id="player-hp-cur">45</span> / <span id="player-hp-max">45</span>
+                    </div>
+                    <div class="hud-exp-container">
+                        <span class="exp-label">EXP</span>
+                        <div class="exp-bar-bg">
+                            <div id="player-exp-fill" class="exp-bar-fill" style="width: 0%;"></div>
                         </div>
-                        <div class="hud-hp-text">
-                            <span id="player-hp-cur">45</span> / <span id="player-hp-max">45</span>
-                        </div>
+                    </div>
+                    <div class="hud-exp-text">
+                        <span id="player-exp-cur">0</span> / <span id="player-exp-max">100</span> EXP
+                    </div>
+                    <div class="hud-party-balls" id="player-party-balls" title="Your 4-Pokémon Battle Party">
+                        <span class="party-ball-dot ball-active" title="Slot 1: Active"></span>
+                        <span class="party-ball-dot ball-empty" title="Slot 2: Empty"></span>
+                        <span class="party-ball-dot ball-empty" title="Slot 3: Empty"></span>
+                        <span class="party-ball-dot ball-empty" title="Slot 4: Empty"></span>
                     </div>
                 </div>
 
@@ -121,12 +145,13 @@
 
                 <!-- INTERACTIVE CONTROLS (RIGHT) -->
                 <div class="controls-box">
-                    <!-- MAIN 4 ACTION BUTTONS -->
+                    <!-- MAIN 5 ACTION BUTTONS -->
                     <div id="main-actions-grid" class="actions-grid">
                         <button id="btn-fight" class="btn-action btn-red">⚔️ FIGHT</button>
                         <button id="btn-bag" class="btn-action btn-yellow">🎒 BAG</button>
+                        <button id="btn-pokemon" class="btn-action btn-purple">🔄 POKÉMON</button>
                         <button id="btn-catch" class="btn-action btn-blue">🔴 CATCH</button>
-                        <button id="btn-run" class="btn-action btn-green">🏃 RUN</button>
+                        <button id="btn-run" class="btn-action btn-green btn-span-2">🏃 RUN</button>
                     </div>
 
                     <!-- SUBMENU: MOVES (FIGHT) -->
@@ -209,7 +234,8 @@
             <div class="modal-body">
                 <p id="victory-message">You defeated the wild Pokémon!</p>
                 <div class="victory-rewards">
-                    <span>⭐ +50 EXP Gained!</span>
+                    <span id="victory-exp">⭐ +60 EXP Gained!</span>
+                    <div id="victory-player-status" class="victory-status-line">CHARMANDER: Level 5 (60 / 100 EXP)</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -218,15 +244,117 @@
         </div>
     </div>
 
-    <!-- POKEDEX DRAWER MODAL -->
+    <!-- EVOLUTION CUTSCENE MODAL -->
+    <div id="modal-evolution" class="modal-overlay hidden">
+        <div class="modal-card evolution-card">
+            <div class="modal-header">
+                <span class="sparkle-icon">✨</span>
+                <h3 id="evolution-title">EVOLUTION!</h3>
+                <span class="sparkle-icon">✨</span>
+            </div>
+            <div class="modal-body evolution-body">
+                <p id="evolution-announcement">What? CHARMANDER is evolving!</p>
+                <div class="evolution-sprites">
+                    <img id="evo-sprite-old" class="evo-sprite" src="/static/images/sprites/charmander.gif" alt="Before Evolution">
+                    <span class="evo-arrow">➡️</span>
+                    <img id="evo-sprite-new" class="evo-sprite anim-evolution-glow" src="/static/images/sprites/charmeleon.gif" alt="After Evolution">
+                </div>
+                <div class="evolution-congrats" id="evolution-congrats">
+                    Congratulations! Your CHARMANDER evolved into CHARMELEON!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-close-evolution" class="btn-retro btn-yellow">AWESOME! 🌟</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GYM SELECTION & PROGRESSION MODAL -->
+    <div id="modal-gym" class="modal-overlay hidden">
+        <div class="modal-card gym-modal-card" style="max-width: 650px; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="border-bottom-color: #e67e22; color: #e67e22;">
+                <span class="pokeball-icon">🏛️</span>
+                <h3>KANTO POKÉMON GYM LEAGUE</h3>
+                <button id="btn-close-gym" class="btn-retro btn-small">✖</button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; padding-right: 6px;">
+                <p style="font-size: 8px; color: #555; margin-bottom: 8px;">
+                    Challenge Gym Leaders to earn official League Badges and unlock advanced Gyms!
+                </p>
+                <div id="gyms-list-container" class="gyms-grid">
+                    <div style="font-size: 9px; padding: 16px; text-align: center;">Loading Gyms...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BADGE CELEBRATION MODAL -->
+    <div id="modal-badge" class="modal-overlay hidden">
+        <div class="modal-card badge-celebration-card">
+            <div class="modal-header" style="border-bottom-color: #f1c40f; color: #f1c40f;">
+                <span>✨ 🏆 ✨</span>
+                <h3 id="badge-modal-title">GYM BADGE EARNED!</h3>
+                <span>✨ 🏆 ✨</span>
+            </div>
+            <div class="modal-body">
+                <div id="badge-anim-icon" class="badge-celebration-icon">🪨</div>
+                <h4 id="badge-modal-name" style="font-size: 13px; color: #2c3e50; margin-bottom: 8px;">BOULDER BADGE</h4>
+                <p id="badge-modal-dialogue" style="font-size: 9px; color: #555; line-height: 1.5; margin-bottom: 12px;">
+                    "You've proven your strength! Take this badge as proof of your victory!"
+                </p>
+                <div class="victory-rewards" style="margin-top: 8px;">
+                    <span id="badge-reward-exp">⭐ +150 EXP Gained!</span>
+                    <span id="badge-reward-items" style="color: #27ae60; font-weight: bold; font-size: 8px;">💊 +2 Potions Added to Bag!</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-close-badge" class="btn-retro btn-yellow">AWESOME! 🌟</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POKÉMON PARTY SWITCH MODAL (IN-BATTLE & ON FAINT) -->
+    <div id="modal-party-switch" class="modal-overlay hidden">
+        <div class="modal-card party-switch-card">
+            <div class="modal-header" style="border-bottom-color: #8e44ad; color: #8e44ad;">
+                <span class="party-icon">🔄</span>
+                <h3 id="party-switch-title">CHOOSE A POKÉMON</h3>
+                <button id="btn-close-party-switch" class="btn-retro btn-small">✖</button>
+            </div>
+            <div class="modal-body">
+                <p id="party-switch-subtitle" class="party-switch-subtitle">Select a conscious Pokémon from your 4-member party:</p>
+                <div id="party-switch-list" class="party-switch-grid">
+                    <!-- Populated dynamically with player's party members -->
+                </div>
+            </div>
+            <div class="modal-footer" id="party-switch-footer">
+                <button id="btn-cancel-party-switch" class="btn-retro btn-back">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POKEDEX & TEAM BUILDER MODAL -->
     <div id="modal-pokedex" class="modal-overlay hidden">
         <div class="modal-card pokedex-card">
             <div class="modal-header">
-                <h3>TRAINER'S POKÉDEX</h3>
+                <h3>TRAINER'S POKÉDEX & 4-POKÉMON TEAM</h3>
                 <button id="btn-close-pokedex" class="btn-retro btn-small">✖</button>
             </div>
             <div class="modal-body">
-                <p>Pokémon Registered in this Session:</p>
+                <!-- 4-POKÉMON ACTIVE BATTLE PARTY -->
+                <div class="pokedex-section-header">
+                    <span class="pokedex-section-title">⭐ ACTIVE BATTLE PARTY (Up to 4 Pokémon):</span>
+                    <button id="btn-heal-party" class="btn-retro btn-heal-team" title="Fully heal entire party at Pokémon Center!">❤️ NURSE JOY HEAL</button>
+                </div>
+                <div id="pokedex-party-grid" class="pokedex-party-grid">
+                    <!-- Populated dynamically with up to 4 party slots -->
+                </div>
+
+                <!-- REGISTERED / CAUGHT POKEDEX & STORAGE -->
+                <div class="pokedex-section-header" style="margin-top: 16px;">
+                    <span class="pokedex-section-title">📖 POKÉDEX & PC STORAGE:</span>
+                    <span class="pokedex-help-text">Click a Pokémon to add or swap into your 4-Pokémon party!</span>
+                </div>
                 <div id="pokedex-list" class="pokedex-grid">
                     <div class="empty-pokedex">No Pokémon registered yet! Pick a starter or catch wild Pokémon during battle!</div>
                 </div>
@@ -247,6 +375,8 @@
                     <button class="btn-retro btn-small tab-btn" data-tab="tab-m2">M2: STARTERS</button>
                     <button class="btn-retro btn-small tab-btn" data-tab="tab-m3">M3: BATTLE</button>
                     <button class="btn-retro btn-small tab-btn" data-tab="tab-m4">M4: CATCH</button>
+                    <button class="btn-retro btn-small tab-btn" data-tab="tab-m5">M5: EVOLVE</button>
+                    <button class="btn-retro btn-small tab-btn" data-tab="tab-team">TEAM</button>
                     <button class="btn-retro btn-small tab-btn" data-tab="tab-tips">💡 TIPS</button>
                 </div>
                 
@@ -297,6 +427,30 @@
                         <li>Return <code>(True, 3)</code> on success, or <code>(False, shakes)</code> on escape!</li>
                     </ul>
                     <div class="guide-hint">💡 <em>Hint: Test with <code>python3 tests/test_catching.py</code>!</em></div>
+                </div>
+
+                <div id="tab-m5" class="guide-tab-content hidden">
+                    <h4>✨ Mission 5: Level Up & Evolution (pokemon.py)</h4>
+                    <p><strong>Goal:</strong> Gain EXP, grow stats, learn powerhouse moves, and evolve!</p>
+                    <ul class="guide-list">
+                        <li><code>gain_exp(amount)</code>: Add EXP. For every 100 EXP, call <code>self.level_up()</code>!</li>
+                        <li><code>level_up()</code>: Level +1, max_hp +5, attack +3, defense +2, restore full HP. Check milestone moves & evolution.</li>
+                        <li><code>learn_move(move)</code>: Keep up to 4 moves (drop oldest if full).</li>
+                        <li><code>check_evolution()</code>: At milestone levels (Lv. 7, 8, 10), transform name, sprites, and gain huge stat boosts!</li>
+                    </ul>
+                    <div class="guide-hint">💡 <em>Hint: Test with <code>python3 tests/test_progression.py</code>!</em></div>
+                </div>
+
+                <div id="tab-team" class="guide-tab-content hidden">
+                    <h4>🔄 4-Pokémon Party & Switch System (team.py)</h4>
+                    <p><strong>Goal:</strong> Command a squad of up to 4 Pokémon, switch mid-battle, and swap teammates from your Pokédex!</p>
+                    <ul class="guide-list">
+                        <li><code>add_to_party(party, mon)</code>: Adds Pokémon up to strict 4-member party limit.</li>
+                        <li><code>switch_pokemon(party, cur, target)</code>: Switches active Pokémon (prevents switching to fainted or current mon).</li>
+                        <li><code>has_conscious_pokemon(party)</code>: Checks if any alive Pokémon remain. If active faints, choose your next teammate!</li>
+                        <li><code>heal_party(party)</code>: Fully restores all 4 party Pokémon (Nurse Joy Pokémon Center heal!).</li>
+                    </ul>
+                    <div class="guide-hint">💡 <em>Hint: Test with <code>python3 tests/test_team.py</code>!</em></div>
                 </div>
 
                 <div id="tab-tips" class="guide-tab-content hidden">
