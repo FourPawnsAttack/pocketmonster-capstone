@@ -118,7 +118,7 @@ Program the combat math that decides how much damage attacks deal and how the en
 2. **`calculate_damage(move_name, attacker, defender)`**:
    - **Step 1: Move Power**: Look up `move_name` in `MOVES`. If unknown, default power to 40 and type to `"Normal"`.
    - **Step 2: Base Damage**:
-     $$\text{base\_damage} = \frac{\text{power} \times \text{attacker.attack}}{\text{defender.defense}}$$
+     $$\text{base damage} = \frac{\text{power} \times \text{attacker.attack}}{\text{defender.defense}}$$
      *(Guard against zero defense: if defender.defense <= 0, use 1!)*
    - **Step 3: Critical Hit**:
      - Roll a random float: `is_critical = random.random() < 0.10` (10% chance!).
@@ -163,10 +163,10 @@ Throw Pokéballs and calculate whether a wild Pokémon is caught or breaks free!
      - Ultra Ball = `2.0x`
    - **Missing HP Percentage**:
      - Weaker Pokémon are easier to catch!
-     - $\text{missing\_hp\_pct} = \frac{\text{max\_hp} - \text{current\_hp}}{\text{max\_hp}}$
+     - $\text{missing hp pct} = \frac{\text{max hp} - \text{current hp}}{\text{max hp}}$
    - **Catch Chance Formula**:
-     - $\text{base\_chance} = 0.30 + (0.60 \times \text{missing\_hp\_pct})$
-     - $\text{total\_chance} = \min(0.95, \text{base\_chance} \times \text{ball\_mult})$
+     - $\text{base chance} = 0.30 + (0.60 \times \text{missing hp pct})$
+     - $\text{total chance} = \min(0.95, \text{base chance} \times \text{ball mult})$
    - **Roll to Catch**:
      - Roll `roll = random.random()`.
      - If `roll < total_chance`: Caught! Return `True, 3` (3 shakes and a click!).
