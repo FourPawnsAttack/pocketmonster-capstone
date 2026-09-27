@@ -239,27 +239,28 @@ body {
     padding: 4px 8px;
     font-size: 8px;
     color: #fff;
+    background: #7f8c8d;
     border-radius: 3px;
     border: 2px solid #000;
     margin-bottom: 8px;
 }
 
-.type-Fire { background: var(--color-red); color: #fff; }
-.type-Water { background: var(--color-blue); color: #fff; }
-.type-Grass { background: var(--color-green); color: #fff; }
-.type-Electric { background: var(--color-yellow); color: #000; }
-.type-Normal { background: #95a5a6; color: #fff; }
-.type-Flying { background: #1abc9c; color: #fff; }
-.type-Ghost { background: var(--color-ghost); color: #fff; }
-.type-Psychic { background: #e84393; color: #fff; }
-.type-Bug { background: #879b1d; color: #fff; }
-.type-Rock { background: #a59132; color: #fff; }
-.type-Fighting { background: #c0392b; color: #fff; }
-.type-Dragon { background: #6c5ce7; color: #fff; }
-.type-Poison { background: #8e44ad; color: #fff; }
-.type-Ground { background: #d35400; color: #fff; }
-.type-Ice { background: #00cec9; color: #000; }
-.type-Steel { background: #7f8c8d; color: #fff; }
+.type-Fire, .type-fire { background: var(--color-red); color: #fff; }
+.type-Water, .type-water { background: var(--color-blue); color: #fff; }
+.type-Grass, .type-grass { background: var(--color-green); color: #fff; }
+.type-Electric, .type-electric { background: var(--color-yellow); color: #000; }
+.type-Normal, .type-normal { background: #95a5a6; color: #fff; }
+.type-Flying, .type-flying { background: #1abc9c; color: #fff; }
+.type-Ghost, .type-ghost { background: var(--color-ghost); color: #fff; }
+.type-Psychic, .type-psychic { background: #e84393; color: #fff; }
+.type-Bug, .type-bug { background: #879b1d; color: #fff; }
+.type-Rock, .type-rock { background: #a59132; color: #fff; }
+.type-Fighting, .type-fighting { background: #c0392b; color: #fff; }
+.type-Dragon, .type-dragon { background: #6c5ce7; color: #fff; }
+.type-Poison, .type-poison { background: #8e44ad; color: #fff; }
+.type-Ground, .type-ground { background: #d35400; color: #fff; }
+.type-Ice, .type-ice { background: #00cec9; color: #000; }
+.type-Steel, .type-steel { background: #7f8c8d; color: #fff; }
 
 .starter-stats {
     font-size: 8px;

@@ -138,6 +138,13 @@ Program the combat math that decides how much damage attacks deal and how the en
 - Remember that Python functions can return multiple items as a tuple:
   `return final_damage, is_critical, type_multiplier`
 - When you run your damage formula in the game, you'll see glowing red damage numbers and retro sound effects!
+- **Move Types & Badges**: Each attack move has its own elemental type in `MOVES` (in `pokemon_data.py`).
+  - Fire moves (`"Ember"`, `"Flamethrower"`) have `"type": "Fire"`.
+  - Water moves (`"Water Gun"`, `"Hydro Pump"`) have `"type": "Water"`.
+  - Grass moves (`"Vine Whip"`, `"Solar Beam"`) have `"type": "Grass"`.
+  - Electric moves (`"Thundershock"`, `"Thunderbolt"`) have `"type": "Electric"`.
+  - Normal moves (`"Tackle"`, `"Quick Attack"`) have `"type": "Normal"`.
+  - In the battle arena, every move button shows its elemental type badge and power! You can look up move types and stats at [pokemondb.net/move/all](https://pokemondb.net/move/all).
 
 ---
 

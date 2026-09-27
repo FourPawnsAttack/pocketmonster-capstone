@@ -30,7 +30,7 @@
         <div class="nav-actions">
             <button id="btn-sound" class="btn-retro btn-small" title="Toggle Sound">🔊 SOUND: ON</button>
             <button id="btn-gyms" class="btn-retro btn-small" title="Challenge Gym Leaders and Earn Badges">🏛️ GYMS (<span id="badges-count">0/5</span>)</button>
-            <a href="/progress" class="btn-retro btn-small" title="View Code & Game Progress" style="text-decoration: none; color: inherit;">📊 PROGRESS</a>
+            <a href="/progress" class="btn-retro btn-small" title="View Code & Game Progress" style="text-decoration: none;">📊 PROGRESS</a>
             <button id="btn-guide" class="btn-retro btn-small" title="Trainer Guide & Mission Hints">📜 GUIDE</button>
             <button id="btn-pokedex" class="btn-retro btn-small" title="View Caught Pokémon">📖 POKÉDEX (<span id="pokedex-count">0</span>)</button>
             <button id="btn-toggle-mode" class="btn-retro btn-small btn-mode" title="Click to toggle between Student Code and Reference Solution">
@@ -411,6 +411,7 @@
                         <li><code>get_type_multiplier</code>: Super effective = 2.0x, Not very effective = 0.5x, Neutral = 1.0x.</li>
                         <li><code>calculate_damage</code>: Base formula is <code>(power * attacker.attack) / defender.defense</code>.</li>
                         <li>Check for 10% critical hit (1.5x damage).</li>
+                        <li>Move types and base powers come from <code>MOVES</code> in <code>pokemon_data.py</code> (see pokemondb.net/move/all).</li>
                         <li>Guarantee at least 1 damage! Return <code>final_damage, is_critical, type_multiplier</code>.</li>
                         <li><code>choose_enemy_move</code>: Pick randomly using <code>random.choice(enemy.moves)</code>.</li>
                     </ul>
